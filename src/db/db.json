@@ -1,0 +1,20 @@
+{
+  "purchaseOrders": [
+    {
+      "id": "05b3b771-24e0-4be4-affd-a373db2f288c",
+      "itemName": "Laptop Asus Asas",
+      "category": "Electronics",
+      "quantity": 20,
+      "supplier": "Tech Supplier Inc.",
+      "status": "Pending"
+    },
+    {
+      "id": "47d2d7b4-cd60-4de1-b528-681c1628e9e0",
+      "itemName": "HP IPONG",
+      "category": "Electronics",
+      "quantity": 14,
+      "supplier": "Tech Supplier Inc.",
+      "status": "Pending"
+    }
+  ]
+}
