@@ -1,13 +1,13 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import fs from 'fs';
+import fs, { read } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8080;
 
 // ===================== Tipe Data =====================
 interface PurchaseOrder {
@@ -83,6 +83,39 @@ app.get('/purchase-orders', (req: Request, res: Response) => {
   });
 });
 
+//6. query search
+app.get('/purchase-orders/search', (req: Request, res: Response) => {
+  // Mengambil query parameters yang bersifat optional
+  const { itemName, category, supplier, status } = req.query;
+
+  // Mengambil data dari database/in-memory
+  const db = readDB();
+
+  // Melakukan filter data berdasarkan setiap parameter yang diberikan
+  const results = db.purchaseOrders.filter((order) => {
+    let isMatch = true;
+    if (itemName) {
+      isMatch = isMatch && order.itemName.toLowerCase().includes((itemName as string).toLowerCase());
+    }
+    if (category) {
+      isMatch = isMatch && order.category.toLowerCase().includes((category as string).toLowerCase());
+    }
+    if (supplier) {
+      isMatch = isMatch && order.supplier.toLowerCase().includes((supplier as string).toLowerCase());
+    }
+    if (status) {
+      isMatch = isMatch && order.status.toLowerCase().includes((status as string).toLowerCase());
+    }
+    return isMatch;
+  });
+
+  return res.json({
+    success: true,
+    purchaseOrders: results
+  });
+});
+
+
 // 3. Mendapatkan Orders berdasarkan ID
 app.get('/purchase-orders/:id', (req: Request, res: Response) => {
   const db = readDB();
@@ -143,6 +176,10 @@ app.delete('/purchase-orders/:id', (req: Request, res: Response) => {
     message: 'Purchased Order Deleted'
   });
 });
+
+
+
+
 
 // ===================== Start Server =====================
 app.listen(port, () => {
